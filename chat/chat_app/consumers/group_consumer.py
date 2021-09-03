@@ -42,6 +42,7 @@ class ChatConsumer(WebsocketConsumer):
                 'type': 'chat_message',
                 'message': message.text,
                 'user': message.user.username,
+                'user_id': message.user.pk,
                 'created': message.created.isoformat()
             }
         )
@@ -59,6 +60,7 @@ class ChatConsumer(WebsocketConsumer):
                 'type': 'chat_message',
                 'message': message.text,
                 'user': message.user.username,
+                'user_id': message.user.pk,
                 'created': message.created.isoformat()
             }
             async_to_sync(self.channel_layer.group_send)(

@@ -4,11 +4,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Django chat</title>
+    <title>{% block title %}Django chat{% endblock %}</title>
 
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    {% block link %}{% endblock %}
 
     <style>
       .bd-placeholder-img {
