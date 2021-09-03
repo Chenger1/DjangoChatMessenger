@@ -17,13 +17,57 @@
     </div>
     <div id="chat-input">
         <input type="text" id="chat_message_input" class="form-control">
-        <button type="submit" class="btn btn-light" style="margin-top: 10px;">Send</button>
+        <button type="submit" class="btn btn-light" style="margin-top: 10px;"
+        id="chat_message_submit">Send</button>
     </div>
 </div>
 
 <script>
+    // INIT Chat socket
     let url = 'ws://' + window.location.host + '/ws/chat/' + '{{group.pk }}/';
     let chatSocket = new WebSocket(url);
+    
+    chatSocket.onmessage = function(e) {
+        let data = JSON.parse(e.data);
+        let message = data.message;
+
+        let $chat = document.getElementById('chat');
+        let child = document.createElement('div')
+        child.textContent = message+'\n';
+        $chat.append(child);
+        $chat.scrollTop($chat[0].scrollHeight);
+    };
+
+    chatSocket.onclose = function(e) {
+        console.error('Chat socket closed unexpectedly');
+    };
+
+
+    // SEND MESSAGES
+    let $input = document.getElementById('chat_message_input');
+    let $submit = document.getElementById('chat_message_submit');
+
+    $submit.addEventListener('click', function(e){
+        let message = $input.value;
+        if(message) {
+            // send message in JSON format
+            chatSocket.send(JSON.stringify({'message': message}));
+
+            //clear input
+            $input.value = '';
+
+            // return focus
+            $input.focus();
+        }
+    })
+
+    // ENABLE CHECKING FOR 'ENTER' button
+    $input.focus();
+    $input.addEventListener('keyup', function(e){
+        if(e.which === 13) {
+            $submit.click();
+        }
+    })
 </script>
 {% endblock %}
 </body>

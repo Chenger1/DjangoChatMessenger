@@ -138,6 +138,8 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 .idea
+.vscode/
 venv
 !/chat/chat_app/migrations/
 !/chat/_db/migrations/
+.vscode/launch.json
