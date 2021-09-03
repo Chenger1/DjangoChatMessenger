@@ -1,0 +1,19 @@
+{% extends 'index.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chats</title>
+</head>
+<body>
+{% block content %}
+    {% for chat in instances %}
+    <p><a href="">{{ chat.name }}</a></p>
+    {% empty %}
+    <p>There are no any chats yet. But you can create a new one</p>
+    {% endfor %}
+
+<a href="" class="btn btn-primary" style="border: 1px solid white">Create new chat</a>
+{% endblock %}
+</body>
+</html>
