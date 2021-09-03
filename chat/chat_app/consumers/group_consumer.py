@@ -10,7 +10,7 @@ class ChatConsumer(WebsocketConsumer):
         self.pk = self.scope['url_route']['kwargs']['pk']
         self.group = Group.objects.filter(pk=self.pk).first()
         if not self.group:
-            return
+            self.close()
         self.chat_group_name = self.group.name
 
         # join chat group
@@ -19,6 +19,8 @@ class ChatConsumer(WebsocketConsumer):
             self.channel_name
         )
         self.accept()
+
+        self.restore_chat_history()
 
     def disconnect(self, close_code):
         async_to_sync(self.channel_layer.group_discard)(
@@ -38,7 +40,9 @@ class ChatConsumer(WebsocketConsumer):
             self.chat_group_name,
             {
                 'type': 'chat_message',
-                'message': message.text
+                'message': message.text,
+                'user': message.user.username,
+                'created': message.created.isoformat()
             }
         )
 
@@ -47,3 +51,18 @@ class ChatConsumer(WebsocketConsumer):
         # to match the type key and
         # send message to WebSocket
         self.send(text_data=json.dumps(event))
+
+    def restore_chat_history(self):
+        # When user access to channel - restore all previous message from this channel
+        for message in self.group.messages.all():
+            data = {
+                'type': 'chat_message',
+                'message': message.text,
+                'user': message.user.username,
+                'created': message.created.isoformat()
+            }
+            async_to_sync(self.channel_layer.group_send)(
+                self.chat_group_name,
+                data
+            )
+
