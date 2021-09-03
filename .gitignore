@@ -140,6 +140,6 @@ cython_debug/
 .idea
 .vscode/
 venv
-!/chat/chat_app/migrations/
-!/chat/_db/migrations/
 .vscode/launch.json
+*/chat/_db/migrations/
+/chat/_db/migrations/
