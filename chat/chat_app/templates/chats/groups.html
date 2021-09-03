@@ -12,8 +12,15 @@
     {% empty %}
     <p>There are no any chats yet. But you can create a new one</p>
     {% endfor %}
+<hr>
+<form method="post" action="">
+    {% csrf_token %}
+    <div class="form-group">
+        <input type="text" name="name" placeholder="Chat name" class="form-control">
+    </div>
+    <button class="btn btn-primary" style="border: 1px solid white; margin-top: 10px;" type="submit">Create new chat</button>
+</form>
 
-<a href="" class="btn btn-primary" style="border: 1px solid white">Create new chat</a>
 {% endblock %}
 </body>
 </html>
