@@ -5,20 +5,15 @@ from django.core.exceptions import ValidationError
 User = get_user_model()
 
 
-class UserForm(forms.ModelForm):
+class SignUpForm(forms.ModelForm):
     password = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'type': 'password',
                                                              'placeholder': 'Your password'}))
-
-    class Meta:
-        model = User
-        fields = ('username', 'password')
-
-
-class SignUpForm(UserForm):
     password2 = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'type': 'password',
                                                               'placeholder': 'Your password again'}))
 
     class Meta:
+        model = User
+        fields = ('username', 'password')
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Username'})
         }

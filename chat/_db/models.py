@@ -15,7 +15,6 @@ class User(AbstractBaseUser):
     is_superuser = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ('username', )
 
     date_joined = models.DateTimeField(default=timezone.now)
 
@@ -33,3 +32,7 @@ class Group(models.Model):
     name = models.CharField(max_length=255, unique=True)
     owner = models.ForeignKey(User, related_name='groups', on_delete=models.CASCADE)
     users = models.ManyToManyField(User, related_name='groups_in')
+
+    @property
+    def owner_username(self):
+        return self.owner.username

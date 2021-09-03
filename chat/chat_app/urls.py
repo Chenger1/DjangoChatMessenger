@@ -17,5 +17,7 @@ urlpatterns = [
 
     # CHATS
     path('groups/', chat_views.ListGroupView.as_view(), name='list_group_view'),
+    path('groups/create/', chat_views.CreateNewChat.as_view(), name='create_group_view'),
+    path('group/<int:pk>/', chat_views.ChatDetail.as_view(), name='group_detail_view')
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

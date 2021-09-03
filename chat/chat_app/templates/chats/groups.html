@@ -8,12 +8,12 @@
 <body>
 {% block content %}
     {% for chat in instances %}
-    <p><a href="">{{ chat.name }}</a></p>
+    <p><a href="" class="btn btn-light">{{ chat.name }}</a> by: <strong>{{ chat.owner_username }}</strong></p>
     {% empty %}
     <p>There are no any chats yet. But you can create a new one</p>
     {% endfor %}
 <hr>
-<form method="post" action="">
+<form method="post" action="{% url 'chat_app:create_group_view' %}">
     {% csrf_token %}
     <div class="form-group">
         <input type="text" name="name" placeholder="Chat name" class="form-control">
