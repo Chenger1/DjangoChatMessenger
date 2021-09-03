@@ -122,6 +122,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+if DEBUG:
+    STATICFILES_DIRS = (
+        ('css', Path(__file__).parent.parent.joinpath('static/css')),
+        ('bootstrap', Path(__file__).parent.parent.joinpath('static/bootstrap'))
+    )
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
