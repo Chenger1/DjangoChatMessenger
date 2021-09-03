@@ -54,7 +54,11 @@
         <h1>Chat for any person</h1>
         <p class="lead">You can join chat, create your own chats and have conversation from all the people around the world</p>
         <p class="lead">
+            {% if request.user.is_authenticated %}
+            <a href="" class="btn btn-lg btn-secondary fw-bold border-white bg-white">Have a chat</a>
+            {% else %}
             <a href="#" class="btn btn-lg btn-secondary fw-bold border-white bg-white">Join now</a>
+            {% endif %}
         </p>
         {% endblock %}
     </main>
