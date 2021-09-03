@@ -20,6 +20,11 @@
         <button type="submit" class="btn btn-light" style="margin-top: 10px;">Send</button>
     </div>
 </div>
+
+<script>
+    let url = 'ws://' + window.location.host + '/ws/chat/' + '{{group.pk }}/';
+    let chatSocket = new WebSocket(url);
+</script>
 {% endblock %}
 </body>
 </html>
