@@ -1,26 +1,44 @@
 {% extends 'index.html' %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Chats</title>
-</head>
-<body>
+{% load static %}
+
+{% block title %}
+    Chats
+{% endblock %}
+{% block link %}
+ <link href="{% static 'css/index.css' %}" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
-    {% for chat in instances %}
-    <p><a href="{% url 'chat_app:group_detail_view' chat.pk %}" class="btn btn-light">{{ chat.name }}</a> by: <strong>{{ chat.owner_username }}</strong></p>
-    {% empty %}
-    <p>There are no any chats yet. But you can create a new one</p>
-    {% endfor %}
+<table class="table" style="color: white;">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Owner</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for chat in instances %}
+            <tr>
+                <td><a href="{% url 'chat_app:group_detail_view' chat.pk %}" class="link-light">{{ chat.pk }}</a></td>
+                <td><a href="{% url 'chat_app:group_detail_view' chat.pk %}" class="link-light">{{ chat.name }}</a></td>
+                <td><a href="{% url 'chat_app:group_detail_view' chat.pk %}" class="link-light">{{ chat.owner_username }}</a></td>
+            </tr>
+        {% empty %}
+        <tr>
+            <td>There are no any chats yet. But you can create a new one</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 <hr>
 <form method="post" action="{% url 'chat_app:create_group_view' %}">
     {% csrf_token %}
     <div class="form-group">
         <input type="text" name="name" placeholder="Chat name" class="form-control">
     </div>
-    <button class="btn btn-primary" style="border: 1px solid white; margin-top: 10px;" type="submit">Create new chat</button>
+    <button class="btn btn-primary" style="border: 1px solid white; margin-top: 10px;" type="submit">Create new chat
+    </button>
 </form>
 
 {% endblock %}
-</body>
-</html>
