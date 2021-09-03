@@ -21,13 +21,6 @@ class User(AbstractBaseUser):
     objects = UserManager()
 
 
-class Message(models.Model):
-    text = models.TextField()
-    user = models.ForeignKey(User, related_name='messages', on_delete=models.CASCADE)
-
-    created = models.DateTimeField(auto_now_add=True)
-
-
 class Group(models.Model):
     name = models.CharField(max_length=255, unique=True)
     owner = models.ForeignKey(User, related_name='groups', on_delete=models.CASCADE)
@@ -36,3 +29,11 @@ class Group(models.Model):
     @property
     def owner_username(self):
         return self.owner.username
+
+
+class Message(models.Model):
+    text = models.TextField()
+    user = models.ForeignKey(User, related_name='messages', on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, related_name='messages', on_delete=models.CASCADE)
+
+    created = models.DateTimeField(auto_now_add=True)
