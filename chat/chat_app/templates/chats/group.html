@@ -7,7 +7,19 @@
 </head>
 <body>
 {% block content %}
-<h1>Owner: {{ group.owner_username }}</h1>
+<div>
+    <h1>Owner: {{ group.owner_username }}</h1>
+</div>
+
+<div>
+    <div id="chat">
+
+    </div>
+    <div id="chat-input">
+        <input type="text" id="chat_message_input" class="form-control">
+        <button type="submit" class="btn btn-light" style="margin-top: 10px;">Send</button>
+    </div>
+</div>
 {% endblock %}
 </body>
 </html>

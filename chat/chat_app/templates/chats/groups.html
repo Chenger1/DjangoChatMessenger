@@ -8,7 +8,7 @@
 <body>
 {% block content %}
     {% for chat in instances %}
-    <p><a href="" class="btn btn-light">{{ chat.name }}</a> by: <strong>{{ chat.owner_username }}</strong></p>
+    <p><a href="{% url 'chat_app:group_detail_view' chat.pk %}" class="btn btn-light">{{ chat.name }}</a> by: <strong>{{ chat.owner_username }}</strong></p>
     {% empty %}
     <p>There are no any chats yet. But you can create a new one</p>
     {% endfor %}
