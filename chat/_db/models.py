@@ -30,6 +30,10 @@ class Group(models.Model):
     def owner_username(self):
         return self.owner.username
 
+    @property
+    def users_count(self):
+        return self.users.count()
+
 
 class Message(models.Model):
     text = models.TextField()

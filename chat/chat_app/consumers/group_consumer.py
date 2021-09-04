@@ -19,6 +19,7 @@ class ChatConsumer(WebsocketConsumer):
             self.channel_name
         )
         self.accept()
+        self.group.users.add(self.scope['user'])
 
         self.restore_chat_history()
 
@@ -55,7 +56,7 @@ class ChatConsumer(WebsocketConsumer):
 
     def restore_chat_history(self):
         # When user access to channel - restore all previous message from this channel
-        for message in self.group.messages.all():
+        for message in self.group.messages.all().order_by():
             data = {
                 'type': 'chat_message',
                 'message': message.text,
