@@ -39,7 +39,9 @@ class ChatDetail(LoginRequired, View):
     template_name = 'chats/group.html'
 
     def get(self, request, pk):
-        group = Group.objects.get(pk=pk)
+        group = Group.objects.filter(pk=pk).first()
+        if not group:
+            return redirect('chat_app:main_page_view')
         return render(request, self.template_name, context={'group': group})
 
 
@@ -47,7 +49,9 @@ class PersonalChatView(LoginRequired, View):
     template_name = 'chats/personal.html'
 
     def get(self, request, pk):
-        user = User.objects.get(pk=pk)
+        user = User.objects.filter(pk=pk).first()
+        if not user:
+            return redirect('chat_app:main_page_view')
         chat_obj = PersonalChat.objects.filter(Q(sender=request.user) | Q(receiver=request.user)).\
             filter(Q(sender=user) | Q(receiver=user)).first()
         return render(request, self.template_name, context={'user': user,
