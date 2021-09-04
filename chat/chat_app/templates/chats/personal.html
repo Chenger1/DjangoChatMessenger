@@ -25,13 +25,17 @@ Group - {{ group.name }}
         </div>
     </div>
     <div class="col-3">
-        <h1><strong>{{ user.username }}</strong></h1>
+        {% if request.user == chat.sender %}
+        <h1><strong>{{ chat.receiver.username }}</strong></h1>
+        {% else %}
+        <h1><strong>{{ chat.sender.username }}</strong></h1>
+        {% endif %}
     </div>
 </div>
 
 <script>
     // INIT Chat socket
-    let url = 'ws://' + window.location.host + '/ws/chat/personal/' + '{{user.pk }}/';
+    let url = 'ws://' + window.location.host + '/ws/chat/personal/' + '{{ user.pk }}/';
     let chatSocket = new WebSocket(url);
     
     chatSocket.onmessage = function(e) {

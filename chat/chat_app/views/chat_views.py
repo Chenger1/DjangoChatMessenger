@@ -42,4 +42,7 @@ class PersonalChatView(LoginRequired, View):
 
     def get(self, request, pk):
         user = User.objects.get(pk=pk)
-        return render(request, self.template_name, context={'user': user})
+        chat_obj = PersonalChat.objects.filter(Q(sender=request.user) | Q(receiver=request.user)).\
+            filter(Q(sender=user) | Q(receiver=user)).first()
+        return render(request, self.template_name, context={'user': user,
+                                                            'chat': chat_obj})

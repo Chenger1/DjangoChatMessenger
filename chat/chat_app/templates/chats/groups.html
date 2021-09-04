@@ -9,6 +9,7 @@
 {% endblock %}
 
 {% block content %}
+<h4>Groups</h4>
 <table class="table" style="color: white;">
     <thead>
         <tr>
@@ -18,9 +19,6 @@
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td scope="3">Groups:</td>
-        </tr>
         {% for chat in instances %}
             <tr>
                 <td><a href="{% url 'chat_app:group_detail_view' chat.pk %}" class="link-light">{{ chat.pk }}</a></td>
@@ -32,10 +30,30 @@
             <td>There are no any chats yet. But you can create a new one</td>
         </tr>
         {% endfor %}
+    </tbody>
+</table>
+<hr>
+<h4>Personal chats</h4>
+<table class="table" style="color: white;">
+    <thead>
         <tr>
-            <td scope="3">Chats:</td>
+            <td>#</td>
+            <td>Person</td>
         </tr>
-
+    </thead>
+    <tbody>
+        {% for chat in chats %}
+            <tr>
+                <td><a href="{% url 'chat_app:personal_chat_view' chat.pk %}" class="link-light">{{ chat.pk }}</a></td>
+                <td><a href="{% url 'chat_app:personal_chat_view' chat.pk %}" class="link-light">
+                    {% if request.user == chat.sender %}
+                        {{ chat.receiver.username }}
+                    {% else %}
+                        {{ chat.sender.username }}
+                    {% endif %}
+                </a></td>
+            </tr>
+        {% endfor %}
     </tbody>
 </table>
 <hr>

@@ -39,6 +39,11 @@ class PersonalChat(models.Model):
     sender = models.ForeignKey('User', related_name='as_sender', on_delete=models.CASCADE)
     receiver = models.ForeignKey('User', related_name='as_receiver', on_delete=models.CASCADE)
 
+    def get_chat_partner(self, pk):
+        if self.sender.pk == pk:
+            return self.receiver.username
+        return self.sender.username
+
 
 class Message(models.Model):
     text = models.TextField()
