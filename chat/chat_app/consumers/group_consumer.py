@@ -76,6 +76,9 @@ class BaseChatConsumer(abc.ABC, WebsocketConsumer):
 
     @abc.abstractmethod
     def action_after_accept(self):
+        """
+        For example, add user to group after connection established
+        """
         pass
 
     @abc.abstractmethod
@@ -84,6 +87,12 @@ class BaseChatConsumer(abc.ABC, WebsocketConsumer):
 
     @abc.abstractmethod
     def get_instance(self):
+        """
+        For public groups (Group) getting instance is just filter by pk.
+        But for Personal Chat we have to filter by sender and receiver field.
+        WebSocket doesnt not provide an ability to add headers, so we cant pass 'pk' to url and 'user' to headers -
+        in the case to create a chat if there is no existing one.
+        """
         pass
 
 
