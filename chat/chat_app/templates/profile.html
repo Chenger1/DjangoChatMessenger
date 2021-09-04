@@ -1,0 +1,60 @@
+{% extends "index.html" %}
+
+{% block title %}
+    {{ request.user.username }}
+{% endblock %}
+{% block page_name %}
+    Profile
+{% endblock %}
+
+{% block content %}
+<div>
+    <h4>User info:</h4>
+    <table class="table" style="color: white;">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Username</th>
+            <th>Messages</th>
+            <th>Groups-in</th>
+            <th>Groups-created</th>
+            <th>Joined</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{ instance.pk }}</td>
+            <td>{{ instance.username }}</td>
+            <td>{{ instance.messages.count }}</td>
+            <td>{{ instance.groups_in.count }}</td>
+            <td>{{ instance.groups.count }}</td>
+            <td>{{ instance.date_joined }}</td>
+        </tr>
+    </tbody>
+</table>
+    <br>
+    <h4>Groups:</h4>
+    <table class="table" style="color: white;">
+        <thead>
+            <tr>
+                <td>#</td>
+                <td>Name</td>
+                <td>Users</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for group in instance.groups.all %}
+                <tr>
+                    <td><a href="{% url 'chat_app:group_detail_view' group.pk %}" class="link-light">{{ group.pk }}</a></td>
+                    <td><a href="{% url 'chat_app:group_detail_view' group.pk %}" class="link-light">{{ group.name }}</a></td>
+                    <td><a href="{% url 'chat_app:group_detail_view' group.pk %}" class="link-light">{{ group.users_count }}</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if request.user.pk != instance.pk %}
+        <a href="" class="btn btn-light">Start messaging</a>
+    {% endif %}
+</div>
+{% endblock %}

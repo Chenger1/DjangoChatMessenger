@@ -35,7 +35,7 @@ Group - {{ group.name }}
             <tbody>
             {% for user in group.users.all %}
                 <tr>
-                    <td><a href="" class="link-light">{{ user.username }}</a></td>
+                    <td><a href="{% url 'chat_app:user_profile_view' user.pk %}" class="link-light">{{ user.username }}</a></td>
                 </tr>
             {% endfor %}
             </tbody>

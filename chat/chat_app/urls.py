@@ -9,6 +9,7 @@ app_name = 'chat_app'
 
 urlpatterns = [
     path('', main_views.MainPageView.as_view(), name='main_page_view'),
+    path('profile/<int:pk>/', main_views.UserProfileView.as_view(), name='user_profile_view'),
 
     # AUTH
     path('sign-up/', auth_views.RegisterView.as_view(), name='register_view'),
