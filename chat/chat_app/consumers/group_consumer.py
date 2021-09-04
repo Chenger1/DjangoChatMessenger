@@ -10,6 +10,8 @@ from _db.models import Group, Message, User, PersonalChat
 
 
 class BaseChatConsumer(abc.ABC, WebsocketConsumer):
+    model = None
+
     def connect(self):
         self.pk = self.scope['url_route']['kwargs']['pk']
         self.instance = self.get_instance()
@@ -84,6 +86,10 @@ class BaseChatConsumer(abc.ABC, WebsocketConsumer):
             }
         )
 
+    def get_instance(self):
+        instance = self.model.objects.filter(pk=self.pk).first()
+        return instance
+
     @abc.abstractmethod
     def save_message(self, message_text):
         pass
@@ -100,24 +106,12 @@ class BaseChatConsumer(abc.ABC, WebsocketConsumer):
         pass
 
     @abc.abstractmethod
-    def get_instance(self):
-        """
-        For public groups (Group) getting instance is just filter by pk.
-        But for Personal Chat we have to filter by sender and receiver field.
-        WebSocket doesnt not provide an ability to add headers, so we cant pass 'pk' to url and 'user' to headers -
-        in the case to create a chat if there is no existing one.
-        """
-        pass
-
-    @abc.abstractmethod
     def get_chat_source(self):
         pass
 
 
 class ChatConsumer(BaseChatConsumer):
-    def get_instance(self):
-        instance = Group.objects.filter(pk=self.pk).first()
-        return instance
+    model = Group
 
     def get_group_name(self):
         return self.instance.name
@@ -136,18 +130,7 @@ class ChatConsumer(BaseChatConsumer):
 
 
 class PersonalChatConsumer(BaseChatConsumer):
-    def get_instance(self):
-        self.user = User.objects.filter(pk=self.pk).first()
-        if not self.user:
-            return
-
-        instance = PersonalChat.objects.filter(Q(sender=self.scope['user'])
-                                               | Q(receiver=self.scope['user'])).\
-            filter(Q(sender=self.user) | Q(receiver=self.user)).first()
-        if not instance:
-            instance = PersonalChat.objects.create(sender=self.scope['user'],
-                                                   receiver=self.user)
-        return instance
+    model = PersonalChat
 
     def get_group_name(self):
         return f'chat_{self.instance.pk}'
@@ -159,7 +142,7 @@ class PersonalChatConsumer(BaseChatConsumer):
         return message
 
     def get_chat_source(self):
-        return self.user.username, reverse('chat_app:personal_chat_view', args=[self.pk])
+        return 'Personal Chat', reverse('chat_app:personal_chat_view', args=[self.pk])
 
     def action_after_accept(self):
         pass

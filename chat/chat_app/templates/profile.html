@@ -58,7 +58,7 @@
     </table>
 
     {% if request.user.pk != instance.pk %}
-        <a href="{% url 'chat_app:personal_chat_view' instance.pk %}" class="btn btn-light">Start messaging</a>
+        <a href="{% url 'chat_app:create_personal_chat_view' instance.pk %}" class="btn btn-light">Start messaging</a>
     {% endif %}
 </div>
 {% endblock %}

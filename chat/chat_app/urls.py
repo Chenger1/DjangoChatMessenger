@@ -24,6 +24,7 @@ urlpatterns = [
     path('group/<int:pk>/leave/', chat_views.LeaveChatGroup.as_view(), name='leave_chat_group'),
 
     # PERSONAL
+    path('personal-create/<int:pk>/', chat_views.CreatePersonalChatView.as_view(), name='create_personal_chat_view'),
     path('personal/<int:pk>/', chat_views.PersonalChatView.as_view(), name='personal_chat_view')
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

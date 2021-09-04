@@ -2,13 +2,13 @@
 {% load static %}
 
 {% block title %}
-Group - {{ group.name }}
+Personal chat
 {% endblock %}
 {% block link %}
 <link rel="stylesheet" href="{% static 'css/index.css' %}">
 {% endblock %}
 
-{% block page_name %}{{ group.name }}{% endblock %}
+{% block page_name %}Personal chat{% endblock %}
 
 {% block content %}
 
@@ -36,7 +36,7 @@ Group - {{ group.name }}
 <script src="{% static 'js/websocket.js' %}"></script>
 <script>
     // INIT Chat socket
-    let url = 'ws://' + window.location.host + '/ws/chat/personal/' + '{{ user.pk }}/';
+    let url = 'ws://' + window.location.host + '/ws/chat/personal/' + '{{ chat.pk }}/';
     let chatSocket = new WebSocket(url);
     let username = '{{ request.user.username }}';
     

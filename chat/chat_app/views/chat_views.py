@@ -7,13 +7,13 @@ from ..forms import chat
 from ..permissions import LoginRequired
 
 
-class ListAllChatsView(ListView):
+class ListAllChatsView(LoginRequired, ListView):
     template_name = 'chats/groups.html'
     model = Group
     context_object_name = 'instances'
 
 
-class ListChatsView(View):
+class ListChatsView(LoginRequired, View):
     template_name = 'chats/groups.html'
 
     def get(self, request):
@@ -45,7 +45,7 @@ class ChatDetail(LoginRequired, View):
         return render(request, self.template_name, context={'group': group})
 
 
-class PersonalChatView(LoginRequired, View):
+class CreatePersonalChatView(LoginRequired, View):
     template_name = 'chats/personal.html'
 
     def get(self, request, pk):
@@ -54,8 +54,20 @@ class PersonalChatView(LoginRequired, View):
             return redirect('chat_app:main_page_view')
         chat_obj = PersonalChat.objects.filter(Q(sender=request.user) | Q(receiver=request.user)).\
             filter(Q(sender=user) | Q(receiver=user)).first()
+        if not chat_obj:
+            chat_obj = PersonalChat.objects.create(sender=request.user, receiver=user)
         return render(request, self.template_name, context={'user': user,
                                                             'chat': chat_obj})
+
+
+class PersonalChatView(LoginRequired, View):
+    template_name = 'chats/personal.html'
+
+    def get(self, request, pk):
+        chat_obj = PersonalChat.objects.filter(pk=pk).first()
+        if not chat_obj:
+            return redirect('chat_app:main_page_view')
+        return render(request, self.template_name, context={'chat': chat_obj})
 
 
 class LeaveChatGroup(View):
