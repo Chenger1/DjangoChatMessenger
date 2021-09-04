@@ -44,68 +44,27 @@ Group - {{ group.name }}
     </div>
 </div>
 
+<script src="{% static 'js/websocket.js' %}"></script>
 <script>
     // INIT Chat socket
     let url = 'ws://' + window.location.host + '/ws/chat/' + '{{group.pk }}/';
     let chatSocket = new WebSocket(url);
+    let username = '{{ request.user.username }}';
     
-    chatSocket.onmessage = function(e) {
-        let data = JSON.parse(e.data);
-        let message = data.message;
+    chatSocket.onmessage = socket_onmessage;
 
-        let dateOptions = {hour: 'numeric', minute: 'numeric', housr12: true};
-        let datetime = new Date(data['created']).toLocaleString('en', dateOptions);
-
-        // Use 'username' to check message`s author and add right class for div
-        let isMe = data.user === '{{ request.user.username }}';
-        let source = isMe ? 'me': 'other';
-        let name = isMe ? 'Me': data.user;
-
-        let $chat = document.getElementById('chat');
-        let child = document.createElement('div')
-        child.innerHTML = '<div class="message '+ source +'">' + 
-                          '<strong>' + name + '</strong>' + ' ' +
-                          '<span class="date">'+ datetime +'</span><br>' +
-                          message + 
-                          '</div>';
-        $chat.append(child);
-
-        // check children`s 'array' to get last element and his ofsset to scroll 
-        let chat_children_length = $chat.children.length;
-        let last_element_offset = $chat.children[chat_children_length-1].offsetTop;
-        $chat.scrollTop = last_element_offset;
-    };
-
-    chatSocket.onclose = function(e) {
-        console.error('Chat socket closed unexpectedly');
-    };
+    chatSocket.onclose = socket_onclose;
 
 
     // SEND MESSAGES
     let $input = document.getElementById('chat_message_input');
     let $submit = document.getElementById('chat_message_submit');
 
-    $submit.addEventListener('click', function(e){
-        let message = $input.value;
-        if(message) {
-            // send message in JSON format
-            chatSocket.send(JSON.stringify({'message': message}));
-
-            //clear input
-            $input.value = '';
-
-            // return focus
-            $input.focus();
-        }
-    })
+    $submit.addEventListener('click', submit_event_listener)
 
     // ENABLE CHECKING FOR 'ENTER' button
     $input.focus();
-    $input.addEventListener('keyup', function(e){
-        if(e.which === 13) {
-            $submit.click();
-        }
-    })
+    $input.addEventListener('keyup', input_event_listener);
 
 </script>
 {% endblock %}

@@ -127,7 +127,8 @@ STATIC_URL = '/static/'
 if DEBUG:
     STATICFILES_DIRS = (
         ('css', Path(__file__).parent.parent.joinpath('static/css')),
-        ('bootstrap', Path(__file__).parent.parent.joinpath('static/bootstrap'))
+        ('bootstrap', Path(__file__).parent.parent.joinpath('static/bootstrap')),
+        ('js', Path(__file__).parent.parent.joinpath('static/js')),
     )
 
 # Default primary key field type
