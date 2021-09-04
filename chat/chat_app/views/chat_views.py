@@ -7,11 +7,17 @@ from ..forms import chat
 from ..permissions import LoginRequired
 
 
+class ListAllChatsView(ListView):
+    template_name = 'chats/groups.html'
+    model = Group
+    context_object_name = 'instances'
+
+
 class ListChatsView(View):
     template_name = 'chats/groups.html'
 
     def get(self, request):
-        groups = Group.objects.filter(users=request.user)
+        groups = Group.objects.filter(Q(owner=request.user) | Q(users=request.user)).distinct()
         personal_chats = PersonalChat.objects.filter(Q(sender=request.user) | Q(receiver=request.user))
 
         return render(request, self.template_name, context={'instances': groups,

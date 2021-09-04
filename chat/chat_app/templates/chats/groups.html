@@ -32,6 +32,7 @@
         {% endfor %}
     </tbody>
 </table>
+{% if chats %}
 <hr>
 <h4>Personal chats</h4>
 <table class="table" style="color: white;">
@@ -56,6 +57,7 @@
         {% endfor %}
     </tbody>
 </table>
+{% endif %}
 <hr>
 <form method="post" action="{% url 'chat_app:create_group_view' %}">
     {% csrf_token %}

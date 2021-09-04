@@ -42,6 +42,8 @@
                    href="{% url 'chat_app:main_page_view' %}">Home</a>
                 <a class="nav-link {% if 'groups/' in request.path %}active{% endif %}"
                    href="{% url 'chat_app:list_group_view' %}">Chats</a>
+                <a class="nav-link {% if 'groups-all/explore/' in request.path %}active{% endif %}"
+                   href="{% url 'chat_app:list_all_chats_view' %}">Explore Chats</a>
                 {% if request.user.is_authenticated %}
                 <a class="nav-link" href="{% url 'chat_app:user_profile_view' request.user.pk %}">Profile</a>
                 <a class="nav-link" href="{% url 'chat_app:logout_view' %}">Logout</a>
