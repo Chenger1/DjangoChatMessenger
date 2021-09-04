@@ -54,7 +54,7 @@
         </div>
     </header>
 
-    <main class="px-3">
+    <main class="px-3" id="main">
         {% block content %}
         <h1>Chat for any person</h1>
         <p class="lead">You can join chat, create your own chats and have conversation from all the people around the world</p>
@@ -73,5 +73,22 @@
         </p>
     </footer>
 </div>
+
+<script>
+    let url = 'ws://' + window.location.host + '/ws/main/'
+    let chatSocket = new WebSocket(url);
+    let $div = document.getElementById('main');
+
+
+    chatSocket.onmessage = function(e){
+        let data = JSON.parse(e.data);
+        let message = data.message;
+        $div.append(message);
+    }
+    chatSocket.onclose = function(e){
+        console.error('Chat socker closed');
+    }
+
+</script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 import abc
 import json
 from channels.generic.websocket import WebsocketConsumer
+from channels.consumer import get_channel_layer
 from asgiref.sync import async_to_sync
 
 from django.db.models import Q
@@ -48,6 +49,7 @@ class BaseChatConsumer(abc.ABC, WebsocketConsumer):
                 'created': message.created.isoformat()
             }
         )
+        self.send_notifications()
 
     def chat_message(self, event):
         # method has the same name as 'type' in 'receive' method
@@ -69,6 +71,19 @@ class BaseChatConsumer(abc.ABC, WebsocketConsumer):
                 self.group_name,
                 data
             )
+
+    def send_notifications(self):
+        chat_source, chat_type, pk = self.get_chat_source()
+
+        async_to_sync(self.channel_layer.group_send)(
+            'main_socket',
+            {
+                'type': 'chat_message',
+                'message': f'You have new message from {chat_source}',
+                'chat_type': chat_type,
+                'pk': pk
+            }
+        )
 
     @abc.abstractmethod
     def save_message(self, message_text):
@@ -95,6 +110,10 @@ class BaseChatConsumer(abc.ABC, WebsocketConsumer):
         """
         pass
 
+    @abc.abstractmethod
+    def get_chat_source(self):
+        pass
+
 
 class ChatConsumer(BaseChatConsumer):
     def get_instance(self):
@@ -113,19 +132,22 @@ class ChatConsumer(BaseChatConsumer):
                                          group=self.instance)
         return message
 
+    def get_chat_source(self):
+        return f'Group: {self.instance.name}', 'group', self.instance.pk
+
 
 class PersonalChatConsumer(BaseChatConsumer):
     def get_instance(self):
-        user = User.objects.filter(pk=self.pk).first()
-        if not user:
+        self.user = User.objects.filter(pk=self.pk).first()
+        if not self.user:
             return
 
         instance = PersonalChat.objects.filter(Q(sender=self.scope['user'])
                                                | Q(receiver=self.scope['user'])).\
-            filter(Q(sender=user) | Q(receiver=user)).first()
+            filter(Q(sender=self.user) | Q(receiver=self.user)).first()
         if not instance:
             instance = PersonalChat.objects.create(sender=self.scope['user'],
-                                                   receiver=user)
+                                                   receiver=self.user)
         return instance
 
     def get_group_name(self):
@@ -136,6 +158,9 @@ class PersonalChatConsumer(BaseChatConsumer):
                                          user=self.scope['user'],
                                          personal_chat=self.instance)
         return message
+
+    def get_chat_source(self):
+        return self.instance.username, 'personal', self.user.pk
 
     def action_after_accept(self):
         pass
