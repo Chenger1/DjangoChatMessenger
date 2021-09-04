@@ -1,10 +1,10 @@
 import abc
 import json
 from channels.generic.websocket import WebsocketConsumer
-from channels.consumer import get_channel_layer
 from asgiref.sync import async_to_sync
 
 from django.db.models import Q
+from django.urls import reverse
 
 from _db.models import Group, Message, User, PersonalChat
 
@@ -73,15 +73,14 @@ class BaseChatConsumer(abc.ABC, WebsocketConsumer):
             )
 
     def send_notifications(self):
-        chat_source, chat_type, pk = self.get_chat_source()
+        chat_source, chat_url = self.get_chat_source()
 
         async_to_sync(self.channel_layer.group_send)(
             'main_socket',
             {
                 'type': 'chat_message',
                 'message': f'You have new message from {chat_source}',
-                'chat_type': chat_type,
-                'pk': pk
+                'chat_url': chat_url
             }
         )
 
@@ -133,7 +132,7 @@ class ChatConsumer(BaseChatConsumer):
         return message
 
     def get_chat_source(self):
-        return f'Group: {self.instance.name}', 'group', self.instance.pk
+        return f'Group: {self.instance.name}', reverse('chat_app:group_detail_view', args=[self.instance.pk])
 
 
 class PersonalChatConsumer(BaseChatConsumer):
@@ -160,7 +159,7 @@ class PersonalChatConsumer(BaseChatConsumer):
         return message
 
     def get_chat_source(self):
-        return self.instance.username, 'personal', self.user.pk
+        return self.user.username, reverse('chat_app:personal_chat_view', args=[self.pk])
 
     def action_after_accept(self):
         pass
