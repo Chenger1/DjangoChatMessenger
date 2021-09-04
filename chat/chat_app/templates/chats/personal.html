@@ -1,0 +1,96 @@
+{% extends "index.html" %}
+{% load static %}
+
+{% block title %}
+Group - {{ group.name }}
+{% endblock %}
+{% block link %}
+<link rel="stylesheet" href="{% static 'css/index.css' %}">
+{% endblock %}
+
+{% block page_name %}{{ group.name }}{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-9">
+        <div id="chat">
+
+        </div>
+        <div id="chat-input">
+            <input type="text" id="chat_message_input" class="form-control">
+            <button type="submit" class="btn btn-light" style="margin-top: 10px;"
+                    id="chat_message_submit">Send
+            </button>
+        </div>
+    </div>
+    <div class="col-3">
+        <h1><strong>{{ user.username }}</strong></h1>
+    </div>
+</div>
+
+<script>
+    // INIT Chat socket
+    let url = 'ws://' + window.location.host + '/ws/chat/personal/' + '{{user.pk }}/';
+    let chatSocket = new WebSocket(url);
+    
+    chatSocket.onmessage = function(e) {
+        let data = JSON.parse(e.data);
+        let message = data.message;
+
+        let dateOptions = {hour: 'numeric', minute: 'numeric', housr12: true};
+        let datetime = new Date(data['created']).toLocaleString('en', dateOptions);
+
+        // Use 'username' to check message`s author and add right class for div
+        let isMe = data.user === '{{ request.user.username }}';
+        let source = isMe ? 'me': 'other';
+        let name = isMe ? 'Me': data.user;
+
+        let $chat = document.getElementById('chat');
+        let child = document.createElement('div')
+        child.innerHTML = '<div class="message '+ source +'">' + 
+                          '<strong>' + name + '</strong>' + ' ' +
+                          '<span class="date">'+ datetime +'</span><br>' +
+                          message + 
+                          '</div>';
+        $chat.append(child);
+
+        // check children`s 'array' to get last element and his ofsset to scroll 
+        let chat_children_length = $chat.children.length;
+        let last_element_offset = $chat.children[chat_children_length-1].offsetTop;
+        $chat.scrollTop = last_element_offset;
+    };
+
+    chatSocket.onclose = function(e) {
+        console.error('Chat socket closed unexpectedly');
+    };
+
+
+    // SEND MESSAGES
+    let $input = document.getElementById('chat_message_input');
+    let $submit = document.getElementById('chat_message_submit');
+
+    $submit.addEventListener('click', function(e){
+        let message = $input.value;
+        if(message) {
+            // send message in JSON format
+            chatSocket.send(JSON.stringify({'message': message}));
+
+            //clear input
+            $input.value = '';
+
+            // return focus
+            $input.focus();
+        }
+    })
+
+    // ENABLE CHECKING FOR 'ENTER' button
+    $input.focus();
+    $input.addEventListener('keyup', function(e){
+        if(e.which === 13) {
+            $submit.click();
+        }
+    })
+
+</script>
+{% endblock %}

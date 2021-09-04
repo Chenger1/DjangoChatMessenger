@@ -18,6 +18,9 @@
         </tr>
     </thead>
     <tbody>
+        <tr>
+            <td scope="3">Groups:</td>
+        </tr>
         {% for chat in instances %}
             <tr>
                 <td><a href="{% url 'chat_app:group_detail_view' chat.pk %}" class="link-light">{{ chat.pk }}</a></td>
@@ -29,6 +32,10 @@
             <td>There are no any chats yet. But you can create a new one</td>
         </tr>
         {% endfor %}
+        <tr>
+            <td scope="3">Chats:</td>
+        </tr>
+
     </tbody>
 </table>
 <hr>

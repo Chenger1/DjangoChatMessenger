@@ -35,9 +35,15 @@ class Group(models.Model):
         return self.users.count()
 
 
+class PersonalChat(models.Model):
+    sender = models.ForeignKey('User', related_name='as_sender', on_delete=models.CASCADE)
+    receiver = models.ForeignKey('User', related_name='as_receiver', on_delete=models.CASCADE)
+
+
 class Message(models.Model):
     text = models.TextField()
     user = models.ForeignKey(User, related_name='messages', on_delete=models.CASCADE)
-    group = models.ForeignKey(Group, related_name='messages', on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, related_name='messages', on_delete=models.CASCADE, null=True)
+    personal_chat = models.ForeignKey(PersonalChat, related_name='messages', on_delete=models.CASCADE, null=True)
 
     created = models.DateTimeField(auto_now_add=True)

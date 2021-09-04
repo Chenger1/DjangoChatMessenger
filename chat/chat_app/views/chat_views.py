@@ -1,15 +1,21 @@
 from django.views.generic import ListView, View
 from django.shortcuts import redirect, render
+from django.db.models import Q
 
-from _db.models import Group
+from _db.models import Group, User, PersonalChat
 from ..forms import chat
 from ..permissions import LoginRequired
 
 
-class ListGroupView(ListView):
-    model = Group
+class ListChatsView(View):
     template_name = 'chats/groups.html'
-    context_object_name = 'instances'
+
+    def get(self, request):
+        groups = Group.objects.filter(users=request.user)
+        personal_chats = PersonalChat.objects.filter(Q(sender=request.user) | Q(receiver=request.user))
+
+        return render(request, self.template_name, context={'instances': groups,
+                                                            'chats': personal_chats})
 
 
 class CreateNewChat(LoginRequired, View):
@@ -29,3 +35,11 @@ class ChatDetail(LoginRequired, View):
     def get(self, request, pk):
         group = Group.objects.get(pk=pk)
         return render(request, self.template_name, context={'group': group})
+
+
+class PersonalChatView(LoginRequired, View):
+    template_name = 'chats/personal.html'
+
+    def get(self, request, pk):
+        user = User.objects.get(pk=pk)
+        return render(request, self.template_name, context={'user': user})

@@ -49,12 +49,16 @@
                     <td><a href="{% url 'chat_app:group_detail_view' group.pk %}" class="link-light">{{ group.name }}</a></td>
                     <td><a href="{% url 'chat_app:group_detail_view' group.pk %}" class="link-light">{{ group.users_count }}</a></td>
                 </tr>
+            {% empty %}
+            <tr>
+                <td scope="3">There are no any group yet</td>
+            </tr>
             {% endfor %}
         </tbody>
     </table>
 
     {% if request.user.pk != instance.pk %}
-        <a href="" class="btn btn-light">Start messaging</a>
+        <a href="{% url 'chat_app:personal_chat_view' instance.pk %}" class="btn btn-light">Start messaging</a>
     {% endif %}
 </div>
 {% endblock %}
