@@ -21,6 +21,7 @@ urlpatterns = [
     path('groups-all/explore/', chat_views.ListAllChatsView.as_view(), name='list_all_chats_view'),
     path('groups/create/', chat_views.CreateNewChat.as_view(), name='create_group_view'),
     path('group/<int:pk>/', chat_views.ChatDetail.as_view(), name='group_detail_view'),
+    path('group/<int:pk>/leave/', chat_views.LeaveChatGroup.as_view(), name='leave_chat_group'),
 
     # PERSONAL
     path('personal/<int:pk>/', chat_views.PersonalChatView.as_view(), name='personal_chat_view')

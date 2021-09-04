@@ -40,6 +40,7 @@ Group - {{ group.name }}
             {% endfor %}
             </tbody>
         </table>
+        <a href="{% url 'chat_app:leave_chat_group' group.pk %}" class="btn btn-danger">Leave group</a>
     </div>
 </div>
 

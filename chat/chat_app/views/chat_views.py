@@ -52,3 +52,12 @@ class PersonalChatView(LoginRequired, View):
             filter(Q(sender=user) | Q(receiver=user)).first()
         return render(request, self.template_name, context={'user': user,
                                                             'chat': chat_obj})
+
+
+class LeaveChatGroup(View):
+    def get(self, request, pk):
+        group = Group.objects.filter(pk=pk).first()
+        if group:
+            if group.owner != request.user:
+                group.users.remove(request.user)
+        return redirect('chat_app:main_page_view')
