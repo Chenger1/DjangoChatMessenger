@@ -77,21 +77,24 @@
 </div>
 
 <script>
-    let url = 'ws://' + window.location.host + '/ws/main/'
-    let chatSocket = new WebSocket(url);
-    let $link = document.getElementById('notification');
+    let main_url = 'ws://' + window.location.host + '/ws/main/'
+    let mainChatSocket = new WebSocket(main_url);
+    let main_link = document.getElementById('notification');
+    let main_username = '{{ request.user.username }}';
 
     urls = {
         'group': window.location.host + '/group/',
         'personal': window.location.host + '/personal/'
     }
 
-    chatSocket.onmessage = function(e){
+    mainChatSocket.onmessage = function(e){
         let data = JSON.parse(e.data);
-        $link.href = data.chat_url;
-        $link.textContent = data.message;
+        if(data.username != main_username){  // sender doesnt have to see notification about his own message
+            main_link.href = data.chat_url;
+            main_link.textContent = data.message;
+        }
     }
-    chatSocket.onclose = function(e){
+    mainChatSocket.onclose = function(e){
         console.error('Chat socker closed');
     }
 

@@ -19,7 +19,7 @@ async def get_all_messages_async(model):
 @database_sync_to_async
 def get_all_messages(model):
     """
-    Cant call sync django orm from async context. But QuerySet is laze
+    Cant call sync django orm from async context. But QuerySet is lazy
     So we have to transform it to list before return
     """
     return list(model.messages.all().order_by())

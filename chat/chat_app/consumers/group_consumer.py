@@ -79,14 +79,15 @@ class BaseChatConsumer(abc.ABC, AsyncWebsocketConsumer):
             )
 
     async def send_notifications(self):
-        chat_source, chat_url = self.get_chat_source()
+        chat_source, chat_url, username = self.get_chat_source()
 
         await self.channel_layer.group_send(
             'main_socket',
             {
                 'type': 'chat_message',
                 'message': f'You have new message from {chat_source}',
-                'chat_url': chat_url
+                'chat_url': chat_url,
+                'username': username  # for sender checking
             }
         )
 
@@ -128,7 +129,8 @@ class ChatConsumer(BaseChatConsumer):
         return await async_crud.save_message_async(save_data)
 
     def get_chat_source(self):
-        return f'Group: {self.instance.name}', reverse('chat_app:group_detail_view', args=[self.instance.pk])
+        return (f'Group: {self.instance.name}', reverse('chat_app:group_detail_view', args=[self.instance.pk]),
+                self.scope['user'].username)
 
 
 class PersonalChatConsumer(BaseChatConsumer):
@@ -146,7 +148,8 @@ class PersonalChatConsumer(BaseChatConsumer):
         return await async_crud.save_message_async(save_data)
 
     def get_chat_source(self):
-        return 'Personal Chat', reverse('chat_app:personal_chat_view', args=[self.pk])
+        return ('Personal Chat', reverse('chat_app:personal_chat_view', args=[self.pk]),
+                self.scope['user'].username)
 
     async def action_after_accept(self):
         pass
