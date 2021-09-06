@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'channels',
     '_db',
     'chat_app',
+    'chat_rest',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -148,4 +149,12 @@ CHANNEL_LAYERS = {
             'hosts': [('127.0.0.1', 6379)]
         }
     }
+}
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ]
 }
